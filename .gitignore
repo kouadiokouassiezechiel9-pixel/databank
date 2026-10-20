@@ -1,0 +1,4 @@
+data.json
+data.json.tmp
+data.json.corrupt-*
+node_modules

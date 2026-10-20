@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Banque de donnees</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header class="top">
+    <h1>Banque de donnees</h1>
+    <div id="who" hidden>
+      <span id="email"></span>
+      <button id="logout" class="link" type="button">Deconnexion</button>
+    </div>
+  </header>
+
+  <p class="demo">Demo pour partenaire operateur : les paiements sont simules, aucun vrai forfait internet n'est livre.</p>
+  <p id="msg" class="msg" role="status" aria-live="polite" hidden></p>
+
+  <section id="auth" class="card" hidden>
+    <h2 id="authTitle">Connexion</h2>
+    <form id="authForm">
+      <label for="f-email">Adresse e-mail</label>
+      <input id="f-email" type="email" autocomplete="email" required>
+      <label for="f-pwd">Mot de passe (6 caracteres minimum)</label>
+      <input id="f-pwd" type="password" autocomplete="current-password" minlength="6" required>
+      <button id="authBtn" type="submit">Se connecter</button>
+    </form>
+    <button id="authSwitch" class="link" type="button">Pas de compte ? Creer un compte</button>
+  </section>
+
+  <div id="app" hidden>
+    <section class="card statusCard">
+      <div id="statusBadge" class="statusBadge">Aucun forfait actif</div>
+      <div class="sub" id="statusSub"></div>
+    </section>
+
+    <section class="card plansCard">
+      <h2>Forfaits illimites</h2>
+      <p class="hint">Comme en Europe : pendant la duree choisie, utilisation illimitee, sans toucher au stock de Mo.</p>
+      <ul id="plans" class="plans"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Mon espace de telechargement</h2>
+      <p class="hint">Ajoute un fichier trouve. Avec un forfait illimite actif, aucun Mo n'est deduit. Sinon, 1 Mo de fichier = 1 Mo de stock.</p>
+      <input id="fileInput" type="file">
+      <div class="row">
+        <button id="addFile" type="button">Ajouter</button>
+      </div>
+      <ul id="files" class="files"></ul>
+      <div class="sub" id="storageInfo"></div>
+    </section>
+
+    <details class="card secondary">
+      <summary>Stock de donnees et recharges ponctuelles (optionnel)</summary>
+      <div class="tank" aria-hidden="true"><div id="fill" class="fill"></div></div>
+      <div class="big"><span id="stock">0</span> Mo en stock</div>
+      <p class="hint">Alternative aux forfaits illimites : achete des Mo qui n'expirent jamais.</p>
+      <ul id="recharges" class="tiers"></ul>
+      <h3>Abonnement premium</h3>
+      <p class="hint" id="premiumHint"></p>
+      <button id="premiumBtn" type="button" class="alt">Activer le premium</button>
+    </details>
+
+    <section class="card">
+      <h2>Historique</h2>
+      <ul id="history" class="history"></ul>
+    </section>
+  </div>
+</main>
+<script src="app.js" defer></script>
+</body>
+</html>
