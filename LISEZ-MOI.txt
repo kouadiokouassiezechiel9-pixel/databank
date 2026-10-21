@@ -3,24 +3,20 @@ Banque de donnees - demo pour partenaire operateur (prototype en SIMULATION)
 FONCTIONNALITE PRINCIPALE : forfaits illimites a duree fixe (modele europeen)
 - Forfait "Illimite 7 jours" : 500 F
 - Forfait "Illimite 30 jours" : 5000 F
-Pendant la duree active, l'utilisateur telecharge des fichiers sans toucher a son
-stock de Mo. Activer un nouveau forfait pendant qu'un autre est deja actif prolonge
-la duree (cumul), au lieu de l'ecraser.
+Pendant la duree active, l'utilisateur telecharge des fichiers sans limite. Activer
+un nouveau forfait pendant qu'un autre est deja actif prolonge la duree (cumul),
+au lieu de l'ecraser. Un rond qui se remplit en haut de la page montre en un coup
+d'oeil le temps restant avant la fin du forfait (100 % juste apres activation,
+0 % une fois expire).
 
-FONCTIONNALITES SECONDAIRES (repliees dans la page, section "optionnel")
-- Recharges ponctuelles qui n'expirent JAMAIS :
-    200 F -> 600 Mo normal / 1500 Mo premium
-    500 F -> 1500 Mo normal / 2500 Mo premium
-    1000 F -> 2500 Mo normal / 7000 Mo premium
-- Abonnement premium (1000 F, 30 jours) : ameliore le rendement des recharges ci-dessus.
-- Espace de telechargement personnel : chaque utilisateur ajoute un fichier trouve.
-  Avec un forfait illimite actif, c'est gratuit. Sinon, ca consomme le stock de Mo
-  (1 Mo de fichier = 1 Mo de stock), puis le fichier reste disponible hors ligne.
+Espace de telechargement personnel : chaque utilisateur ajoute un fichier trouve,
+qui reste disponible hors ligne. Cette fonctionnalite necessite un forfait illimite
+actif (sans forfait, le telechargement est bloque avec un message explicite).
 
 CE QUE L'APPLICATION NE FAIT PAS (important pour la demo)
-- Elle ne fournit AUCUNE connexion internet reelle. Le "Mo" et le "forfait illimite"
-  sont des drapeaux internes au serveur, pas un vrai acces reseau. Personne ne peut
-  se connecter a un reseau social grace a ce systeme tant qu'aucun operateur n'est
+- Elle ne fournit AUCUNE connexion internet reelle. Le "forfait illimite" est un
+  drapeau interne au serveur, pas un vrai acces reseau. Personne ne peut se
+  connecter a un reseau social grace a ce systeme tant qu'aucun operateur n'est
   branche derriere.
 - Le paiement est simule : aucun argent reel n'est preleve.
 
@@ -44,8 +40,44 @@ Variables utiles :
   DATA_FILE=/chemin/x.json     changer l'emplacement des donnees
   NODE_ENV=production          cookies Secure (HTTPS requis), bloque les paiements simules
   ALLOW_FAKE_PAYMENT=1         autorise quand meme les paiements simules en production (utile pour une demo en ligne)
+  ADMIN_CODE=un-mot-de-passe-secret   voir ci-dessous "DEVENIR ADMINISTRATEUR"
+  ADMIN_EMAILS=toi@exemple.com        methode alternative, voir ci-dessous
+
+DEVENIR ADMINISTRATEUR : LE CODE ADMINISTRATEUR (methode recommandee)
+A l'inscription, un champ facultatif "Code administrateur" apparait sous le mot
+de passe. C'est UN SEUL code secret, defini par toi via la variable d'environnement
+ADMIN_CODE, et connu de toi seul au depart :
+1. Sur Render (ou en local), ajoute la variable ADMIN_CODE avec le code de ton
+   choix, par exemple : ADMIN_CODE=mon-code-super-secret
+2. Redemarre le serveur (sur Render : "Save, rebuild and deploy").
+3. Inscris-toi normalement (nouvel e-mail + mot de passe), et dans le champ
+   "Code administrateur", tape exactement ce code. Le compte est immediatement
+   reconnu administrateur et redirige vers la page /admin.html.
+4. Si tu veux donner l'acces admin a quelqu'un d'autre plus tard, il te suffit
+   de lui communiquer ce meme code pour qu'il l'utilise a SA propre inscription.
+   Laisser ce champ vide (le cas normal) cree un compte client ordinaire.
+Un compte qui s'inscrit sans ce code, ou avec un code errone, reste un compte
+client classique : aucune indication n'est donnee sur l'existence ou non d'un
+code correct (securite).
+
+Methode alternative : ADMIN_EMAILS (liste blanche d'adresses e-mail separees par
+des virgules, sans espace) continue aussi de fonctionner exactement comme avant :
+toute inscription ou connexion avec une de ces adresses devient automatiquement
+administrateur, meme sans code.
+
+INTERFACE ADMINISTRATEUR
+Une page separee /admin.html montre : nombre de comptes inscrits, forfaits actifs,
+fichiers stockes, revenu simule total, repartition des forfaits vendus, et la liste
+de tous les comptes avec un bouton pour offrir un forfait a un compte (utile pour
+demarrer la demo avec un compte deja actif) et un bouton pour supprimer un compte.
+Un lien "Administration" apparait a cote de l'adresse e-mail en haut de la page
+principale des que le compte connecte est administrateur.
+Un compte administrateur ne peut pas etre supprime depuis l'interface (protection).
 
 SECURITE
 - data.json contient les comptes (mots de passe chiffres) et les fichiers des
   utilisateurs. Ne le partage jamais et ne le publie jamais (deja exclu par .gitignore).
+- Le code administrateur (ADMIN_CODE) est compare en temps constant pour eviter
+  les attaques par mesure de duree de reponse ; ne le partage que par un canal
+  de confiance (jamais par e-mail en clair ni publiquement).
 - Chaque fichier est limite a 10 Mo, et chaque utilisateur a 200 Mo d'espace total.
